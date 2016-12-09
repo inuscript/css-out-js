@@ -34,19 +34,21 @@ const flattenPseudo = (js) => {
   const maps = pseudos.map( ([parent, pseudo]) => {
     const value = js[parent][pseudo]
     return {
-      [parent]: omit(js[parent], pseudo),
       [`${parent}${pseudo}`]: value
     }
   })
   const styles = toPairs(js).map( ([parentSelector, style]) => {
-    if(!pseudos.every( ([parent, pseudo]) => (parent !== parentSelector) )){
-      return {}
+    const pseuded = pseudos.filter(
+      ([parent, _]) => (parent === parentSelector)
+    ).map( ([_, pseudo]) => pseudo )
+    if(pseuded.length > 0){
+      return {
+        [parentSelector]: omit(js[parentSelector], pseuded)
+      }
     }
-    
     return { [parentSelector]: js[parentSelector] }
   })
-
-  return mergeObjects([].concat(maps).concat(styles))
+  return mergeObjects([].concat(styles).concat(maps))
 }
 
 export default (input) => {
