@@ -3,7 +3,7 @@ import './App.css';
 import JSON5 from 'json5';
 import jsOutCss from './js-out-css'
 
-const first = `
+const example = `
 balloon: {
   fontSize: "12px",
   ":after": {
@@ -28,8 +28,6 @@ const parseJsString = (jsStr) => {
   }
 }
 
-
-
 class Result extends Component{
   state = { css: "" }
   componentWillMount(){
@@ -53,18 +51,20 @@ class Result extends Component{
 }
 
 class App extends Component {
-  state = {
-    input: first
-  }
+  state = { input: example }
   render() {
     return (
-      <div className="App">
-        <textarea className="input"
-          placeholder={`{input: "your css js"}`}
-          value={this.state.input}
-          onChange={(e) => this.setState({input: e.target.value })}
-        />
-        <Result input={this.state.input} />
+      <div className="Container">
+        <h1>js-out-css</h1>
+        <div><a href="https://github.com/inuscript/js-out-css">Source</a></div>
+        <div className="App">
+          <textarea className="input"
+            placeholder={`{input: "your css js"}`}
+            value={this.state.input}
+            onChange={(e) => this.setState({input: e.target.value })}
+          />
+          <Result input={this.state.input} />
+        </div>
       </div>
     );
   }
