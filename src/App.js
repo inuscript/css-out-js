@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
 import './App.css';
-import postcss from 'postcss'
-import postcssJs from 'postcss-js'
 import JSON5 from 'json5';
-import mapKeys from 'lodash/mapKeys'
-import flatMap from 'lodash/flatMap'
+import jsOutCss from './js-out-css'
 
 const first = `
-
+balloon: {
+  fontSize: "12px",
+  ":after": {
+    top: "100%",
+    content: '" "',
+  },
+  ":before": {
+    top: "200%",
+    content: '" "',
+  }
+},
+foo: {
+  color: "red"
+}
 `
 const parseJsString = (jsStr) => {
   try{
@@ -18,22 +28,7 @@ const parseJsString = (jsStr) => {
   }
 }
 
-const appendClassPrefix = (js) => {
-  return mapKeys(js, (v, k) => {
-    return `.${k}`
-  })
-}
 
-const flattenPseudo = (js) => {
-  
-}
-
-const jsToCss = (input) => {
-  let json = parseJsString(input)
-  json = appendClassPrefix(json)
-  return postcss()
-    .process(json, {parser: postcssJs})
-}
 
 class Result extends Component{
   state = { css: "" }
@@ -44,7 +39,8 @@ class Result extends Component{
     this.update(input)
   }
   update(input){
-    jsToCss(input)
+    let json = parseJsString(input)
+    jsOutCss(json)
       .then( (result) => {
         this.setState({css: result.css})
       })
