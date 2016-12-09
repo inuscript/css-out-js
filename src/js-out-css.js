@@ -66,7 +66,6 @@ const flattenPseudo = (js) => {
 export default (input) => {
   let json = appendClassPrefix(input)
   json = flattenPseudo(json)
-  console.log(json)
   return postcss()
     .process(json, {parser: postcssJs})
 }
