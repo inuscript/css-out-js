@@ -4,13 +4,24 @@ import postcss from 'postcss'
 import postcssJs from 'postcss-js'
 import JSON5 from 'json5';
 import mapKeys from 'lodash/mapKeys'
+
+const parseJsString = (jsStr) => {
+  try{
+    return JSON5.parse(jsStr)
+  }catch(e){
+    // wrap {}
+    return JSON5.parse(`{${jsStr}}`)
+  }
+}
+
 const appendClassPrefix = (js) => {
   return mapKeys(js, (v, k) => {
     return `.${k}`
   })
 }
+
 const jsToCss = (input) => {
-  let json = JSON5.parse(input)
+  let json = parseJsString(input)
   json = appendClassPrefix(json)
   return postcss()
     .process(json, {parser: postcssJs})
