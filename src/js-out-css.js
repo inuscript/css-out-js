@@ -35,12 +35,16 @@ const psd = (parent, style, pseudo ) => {
   }
 }
 
+const selectorPseudo = (pseudos, selector) => {
+  return pseudos
+    .filter( ([parent, _]) => (parent === selector) )
+    .map( ([_, pseudo]) => pseudo )
+}
+
 const flattenPseudo = (js) => {
   const pseudos = getPseudo(js)
   const styles = toPairs(js).map( ([parentSelector, style]) => {
-    const pseuded = pseudos
-      .filter( ([parent, _]) => (parent === parentSelector) )
-      .map( ([_, pseudo]) => pseudo )
+    const pseuded = selectorPseudo(pseudos, parentSelector)
 
     if(pseuded.length > 0){
       const pseudoStyles = pseuded
