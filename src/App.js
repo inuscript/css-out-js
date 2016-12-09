@@ -4,7 +4,11 @@ import postcss from 'postcss'
 import postcssJs from 'postcss-js'
 import JSON5 from 'json5';
 import mapKeys from 'lodash/mapKeys'
+import flatMap from 'lodash/flatMap'
 
+const first = `
+
+`
 const parseJsString = (jsStr) => {
   try{
     return JSON5.parse(jsStr)
@@ -20,6 +24,10 @@ const appendClassPrefix = (js) => {
   })
 }
 
+const flattenPseudo = (js) => {
+  
+}
+
 const jsToCss = (input) => {
   let json = parseJsString(input)
   json = appendClassPrefix(json)
@@ -29,12 +37,17 @@ const jsToCss = (input) => {
 
 class Result extends Component{
   state = { css: "" }
+  componentWillMount(){
+    this.update(this.props.input)
+  }
   componentWillReceiveProps({input}){
+    this.update(input)
+  }
+  update(input){
     jsToCss(input)
       .then( (result) => {
         this.setState({css: result.css})
       })
-
   }
   render(){
     return <pre className={"result"}>
@@ -45,7 +58,7 @@ class Result extends Component{
 
 class App extends Component {
   state = {
-    input: ""
+    input: first
   }
   render() {
     return (
