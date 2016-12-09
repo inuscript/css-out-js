@@ -29,26 +29,29 @@ const getPseudo = (js) => {
   return flatten(r)
 }
 
+const psd = (parent, style, pseudo ) => {
+  return {
+    [`${parent}${pseudo}`]: style
+  }
+}
+
 const flattenPseudo = (js) => {
   const pseudos = getPseudo(js)
-  const maps = pseudos.map( ([parent, pseudo]) => {
-    const value = js[parent][pseudo]
-    return {
-      [`${parent}${pseudo}`]: value
-    }
-  })
   const styles = toPairs(js).map( ([parentSelector, style]) => {
-    const pseuded = pseudos.filter(
-      ([parent, _]) => (parent === parentSelector)
-    ).map( ([_, pseudo]) => pseudo )
+    const pseuded = pseudos
+      .filter( ([parent, _]) => (parent === parentSelector) )
+      .map( ([_, pseudo]) => pseudo )
+
     if(pseuded.length > 0){
-      return {
-        [parentSelector]: omit(js[parentSelector], pseuded)
-      }
+      const pseudoStyles = pseuded
+        .map( (p) => psd(parentSelector, style[p], p))
+      return [{
+        [parentSelector]: omit(style, pseuded)
+      }].concat(pseudoStyles)
     }
-    return { [parentSelector]: js[parentSelector] }
+    return [{ [parentSelector]: style }]
   })
-  return mergeObjects([].concat(styles).concat(maps))
+  return mergeObjects(flatten(styles))
 }
 
 export default (input) => {
